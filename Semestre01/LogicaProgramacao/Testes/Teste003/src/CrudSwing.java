@@ -8,7 +8,10 @@ public class CrudSwing extends JFrame
     private JTextField txtId, txtNome, txtEmail;
     private JTable tabela;
     private DefaultTableModel modelo;
-    private ArrayList<Usuario> lista = new ArrayList<>();
+    private ArrayList<User> lista = new ArrayList<>();
+
+    private String[] usersTeste = new String[] {"Guilherme", "João", "Ian", "Rafael", "Arthur", "Viniciús", "Luiz", "Flávio", "Heitor"};
+    private int actualId = 1;
 
     public CrudSwing()
     {
@@ -41,6 +44,7 @@ public class CrudSwing extends JFrame
         JButton btnAdicionar = new JButton("Adicionar");
         JButton btnAtualizar = new JButton("Atualizar");
         JButton btnExcluir = new JButton("Excluir");
+        JButton btnGerar = new JButton("Gerar Usuário Teste");
 
         painel.add(btnAdicionar);
         painel.add(btnAtualizar);
@@ -54,6 +58,7 @@ public class CrudSwing extends JFrame
 
         JPanel painelSul = new JPanel();
         painelSul.add(btnExcluir);
+        painelSul.add(btnGerar);
         add(painelSul, BorderLayout.SOUTH);
 
         // Ações
@@ -61,6 +66,7 @@ public class CrudSwing extends JFrame
         btnAdicionar.addActionListener(e -> adicionar());
         btnAtualizar.addActionListener(e -> atualizar());
         btnExcluir.addActionListener(e -> excluir());
+        btnGerar.addActionListener(e -> gerarUsuarioTeste());
 
         tabela.getSelectionModel().addListSelectionListener(e -> preencherCampos());
 
@@ -69,7 +75,7 @@ public class CrudSwing extends JFrame
 
     private void adicionar()
     {
-        Usuario u = new Usuario(
+        User u = new User(
                 txtId.getText(),
                 txtNome.getText(),
                 txtEmail.getText()
@@ -84,7 +90,7 @@ public class CrudSwing extends JFrame
     {
         int linha = tabela.getSelectedRow();
         if (linha >= 0) {
-            Usuario u = lista.get(linha);
+            User u = lista.get(linha);
             u.setId(txtId.getText());
             u.setNome(txtNome.getText());
             u.setEmail(txtEmail.getText());
@@ -107,6 +113,22 @@ public class CrudSwing extends JFrame
         }
     }
 
+    private void gerarUsuarioTeste()
+    {
+        var name = getRandomTestUser();
+        var id = getActualId();
+
+        User u = new User(
+                id + "",
+                name,
+                name + "_" + id + "@gmail.com"
+        );
+
+        lista.add(u);
+        modelo.addRow(new Object[]{u.getId(), u.getNome(), u.getEmail()});
+        limparCampos();
+    }
+
     private void preencherCampos()
     {
         int linha = tabela.getSelectedRow();
@@ -123,26 +145,17 @@ public class CrudSwing extends JFrame
         txtNome.setText("");
         txtEmail.setText("");
     }
-}
 
-// Classe modelo
-class Usuario
-{
-    private String id;
-    private String nome;
-    private String email;
-
-    public Usuario(String id, String nome, String email) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
+    private String getRandomTestUser()
+    {
+        int rng = (int) (Math.random() * (usersTeste.length - 1));
+        return usersTeste[rng];
     }
 
-    public String getId() { return id; }
-    public String getNome() { return nome; }
-    public String getEmail() { return email; }
-
-    public void setId(String id) { this.id = id; }
-    public void setNome(String nome) { this.nome = nome; }
-    public void setEmail(String email) { this.email = email; }
+    private int getActualId()
+    {
+        var id = actualId;
+        actualId++;
+        return id;
+    }
 }
