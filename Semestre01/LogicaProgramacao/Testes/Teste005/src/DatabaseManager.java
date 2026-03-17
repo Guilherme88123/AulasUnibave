@@ -109,7 +109,7 @@ public class DatabaseManager
         try
         {
             String sql = "CREATE TABLE usuarios (" +
-                    "    id VARCHAR(100)," +
+                    "    id INTEGER PRIMARY KEY," +
                     "    name VARCHAR(100)," +
                     "    email VARCHAR(100)" +
                     ");";
@@ -136,7 +136,7 @@ public class DatabaseManager
 
             while (_set.next())
             {
-                String id = _set.getString("id");
+                int id = _set.getInt("id");
                 String name = _set.getString("name");
                 String email = _set.getString("email");
 
@@ -162,9 +162,47 @@ public class DatabaseManager
 
             PreparedStatement _prepareStat = _connection.prepareStatement(_sql);
 
-            _prepareStat.setString(1, user.getId());
+            _prepareStat.setInt(1, user.getId());
             _prepareStat.setString(2, user.getNome());
             _prepareStat.setString(3, user.getEmail());
+
+            _prepareStat.executeUpdate();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void UpdateUser(User user)
+    {
+        try
+        {
+            String _sql = "UPDATE usuarios SET name = ?, email = ? WHERE id = ?";
+
+            PreparedStatement _prepareStat = _connection.prepareStatement(_sql);
+
+            _prepareStat.setString(1, user.getNome());
+            _prepareStat.setString(2, user.getEmail());
+            _prepareStat.setInt(3, user.getId());
+
+            _prepareStat.executeUpdate();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void DeleteUser(int id)
+    {
+        try
+        {
+            String _sql = "DELETE FROM usuarios where id = ?";
+
+            PreparedStatement _prepareStat = _connection.prepareStatement(_sql);
+
+            _prepareStat.setInt(1, id);
 
             _prepareStat.executeUpdate();
         }

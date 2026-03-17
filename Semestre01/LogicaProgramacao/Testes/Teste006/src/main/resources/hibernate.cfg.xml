@@ -1,0 +1,16 @@
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/Teste006</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">Unibave</property>
+
+        <!-- Cria ou atualiza tabela automaticamente -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <property name="hibernate.show_sql">false</property>
+
+        <!-- Mapeamento das entidades -->
+        <mapping class="org.example.Product"/>
+    </session-factory>
+</hibernate-configuration>

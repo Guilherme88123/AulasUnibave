@@ -86,14 +86,31 @@ public class CrudSwing extends JFrame
 
     private void adicionar()
     {
-        User user = new User(
-                txtId.getText(),
-                txtNome.getText(),
-                txtEmail.getText()
-        );
+        try
+        {
+            int id = Integer.parseInt(txtId.getText());
 
-        adicionar(user);
-        limparCampos();
+            if (validarIdDuplicado(id))
+            {
+                JOptionPane.showMessageDialog(null, "Erro, ID já existente!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+
+            User user = new User(
+                    id,
+                    txtNome.getText(),
+                    txtEmail.getText()
+            );
+
+            adicionar(user);
+        }
+        catch (Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, "Campos inválidos!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        finally
+        {
+            limparCampos();
+        }
     }
 
     private void adicionar(User user)
@@ -105,18 +122,28 @@ public class CrudSwing extends JFrame
 
     private void atualizar()
     {
-        int linha = tabela.getSelectedRow();
-        if (linha >= 0) {
-            User u = lista.get(linha);
-            u.setId(txtId.getText());
-            u.setNome(txtNome.getText());
-            u.setEmail(txtEmail.getText());
+        try
+        {
+            int linha = tabela.getSelectedRow();
+            if (linha >= 0) {
+                int id = Integer.parseInt(txtId.getText());
+                User u = lista.get(linha);
+                u.setId(id);
+                u.setNome(txtNome.getText());
+                u.setEmail(txtEmail.getText());
 
-            modelo.setValueAt(u.getId(), linha, 0);
-            modelo.setValueAt(u.getNome(), linha, 1);
-            modelo.setValueAt(u.getEmail(), linha, 2);
+                dbManager.UpdateUser(u);
 
-            limparCampos();
+                modelo.setValueAt(u.getId(), linha, 0);
+                modelo.setValueAt(u.getNome(), linha, 1);
+                modelo.setValueAt(u.getEmail(), linha, 2);
+
+                limparCampos();
+            }
+        }
+        catch (Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, "Campos inválidos!", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -124,6 +151,8 @@ public class CrudSwing extends JFrame
     {
         int linha = tabela.getSelectedRow();
         if (linha >= 0) {
+            User user = lista.get(linha);
+            dbManager.DeleteUser(user.getId());
             lista.remove(linha);
             modelo.removeRow(linha);
             limparCampos();
@@ -136,7 +165,7 @@ public class CrudSwing extends JFrame
         var id = getActualId();
 
         User u = new User(
-                id + "",
+                id,
                 name,
                 name + "_" + id + "@gmail.com"
         );
@@ -172,5 +201,15 @@ public class CrudSwing extends JFrame
         var id = actualId;
         actualId++;
         return id;
+    }
+
+    private boolean validarIdDuplicado(int id)
+    {
+        for (User user : lista)
+        {
+            if (user.getId() == id) return true;
+        }
+
+        return false;
     }
 }
