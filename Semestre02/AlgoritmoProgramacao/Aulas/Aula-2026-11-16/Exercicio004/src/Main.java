@@ -2,6 +2,12 @@ import javax.swing.*;
 
 void main() {
 
+    //Integrantes
+    //Guilherme
+    //Mayco José
+    //Bruno Otávio Buss
+    //Jean
+
     int opcao = -1;
     Produto[] produtos = new Produto[20];
     int produtoCadastrados = 0;
