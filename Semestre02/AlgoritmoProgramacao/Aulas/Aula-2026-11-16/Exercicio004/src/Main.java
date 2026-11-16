@@ -6,7 +6,7 @@ void main() {
     //Guilherme
     //Mayco José
     //Bruno Otávio Buss
-    //Jean
+    //Vinicius
 
     int opcao = -1;
     Produto[] produtos = new Produto[20];
